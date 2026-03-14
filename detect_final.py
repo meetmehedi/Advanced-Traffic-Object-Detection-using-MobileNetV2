@@ -8,9 +8,9 @@ import json
 import numpy as np
 
 # 1. Config
-YOLO_MODEL_PATH = "yolov8n.pt"
-CLASSIFIER_PATH = "traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "class_names.json"
+YOLO_MODEL_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/yolov8n.pt"
+CLASSIFIER_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/traffic_classifier_torch.pth"
+CLASS_NAMES_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/class_names.json"
 TEST_DIRS = [
     "/Users/md.mehedihasan/Downloads/TRaffic/test/test",
     "/Users/md.mehedihasan/Downloads/TRaffic/test round 2/test round 2"
@@ -77,6 +77,14 @@ def run_detection(img_path):
             
             if conf < 0.40: continue 
             
+            # Form-factor heuristic: Rickshaws are wide. If it's a very narrow box, 
+            # it's usually a motorbike rider detected by YOLO as 'person'.
+            ar = (x2 - x1) / float(max(1, y2 - y1))
+            if "rickshaw" in label and ar < 0.45:
+                label = "motorbike"
+                # Optionally retrieve the motorbike confidence from the model outputs
+                # Or just assign the current conf. Using current conf to keep it visible.
+            
         color = (0, 255, 0) if "CNG" in label or "rickshaw" in label else (255, 0, 0)
         cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
         tag = f"{label} {conf:.2f}"
@@ -86,13 +94,13 @@ def run_detection(img_path):
     cv2.imwrite(os.path.join(OUTPUT_DIR, out_name), annotated)
 
 # Process all images
-print("Processing all test images...")
-total_saved = 0
-for d in TEST_DIRS:
-    if not os.path.exists(d): continue
-    files = [os.path.join(d, f) for f in os.listdir(d) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    for f in files:
-        run_detection(f)
-        total_saved += 1
-
-print(f"Finished! Processed {total_saved} images. Results in {OUTPUT_DIR}")
+if __name__ == "__main__":
+    print("Processing all test images...")
+    total_saved = 0
+    for d in TEST_DIRS:
+        if not os.path.exists(d): continue
+        files = [os.path.join(d, f) for f in os.listdir(d) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+        for f in files:
+            run_detection(f)
+            total_saved += 1
+    print(f"Finished! Processed {total_saved} images. Results in {OUTPUT_DIR}")
