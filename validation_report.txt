@@ -1,0 +1,27 @@
+                      precision    recall  f1-score   support
+
+           ambulance       0.00      0.00      0.00         6
+        army vehicle       0.00      0.00      0.00         5
+       auto rickshaw       0.74      0.29      0.41        49
+             bicycle       0.55      0.40      0.46        68
+                 bus       0.70      0.59      0.64       558
+                 car       0.51      0.80      0.62       853
+          garbagevan       0.00      0.00      0.00         1
+        human hauler       0.20      0.04      0.06        27
+             minibus       0.00      0.00      0.00        12
+             minivan       0.45      0.03      0.06       143
+           motorbike       0.63      0.71      0.67       363
+              pickup       0.50      0.10      0.16       196
+           policecar       0.00      0.00      0.00         5
+            rickshaw       0.76      0.62      0.68       559
+             scooter       0.00      0.00      0.00         5
+                 suv       0.40      0.09      0.15       130
+                taxi       1.00      0.38      0.56        13
+three wheelers (CNG)       0.47      0.72      0.57       459
+               truck       0.53      0.59      0.56       267
+                 van       0.00      0.00      0.00        89
+         wheelbarrow       0.60      0.12      0.21        24
+
+            accuracy                           0.57      3832
+           macro avg       0.38      0.26      0.28      3832
+        weighted avg       0.56      0.57      0.54      3832

@@ -17,7 +17,7 @@ TEST_DIRS = [
 ]
 OUTPUT_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final"
 IMG_SIZE = (128, 128)
-CONF_THRESH = 0.45 # Increased to filter out noisy low-confidence results
+CONF_THRESH = 0.45 
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -39,7 +39,8 @@ classifier.classifier[1] = nn.Sequential(
     nn.Dropout(0.4),
     nn.Linear(classifier.last_channel, num_classes)
 )
-classifier.load_state_dict(torch.load(CLASSIFIER_PATH, map_location=device))
+if os.path.exists(CLASSIFIER_PATH):
+    classifier.load_state_dict(torch.load(CLASSIFIER_PATH, map_location=device))
 classifier = classifier.to(device)
 classifier.eval()
 
@@ -62,10 +63,8 @@ def run_detection(img_path):
     h, w = img.shape[:2]
     
     for box in results.boxes:
-        # Get coordinates
         x1, y1, x2, y2 = map(int, box.xyxy[0])
         
-        # Crop and Classify
         crop = img[max(0, y1):min(h, y2), max(0, x1):min(w, x2)]
         if crop.size == 0: continue
         
@@ -76,10 +75,8 @@ def run_detection(img_path):
             label = class_names[predicted.item()]
             conf = torch.softmax(outputs, dim=1)[0][predicted].item()
             
-            # Additional filtering: only use the label if the classifier is also confident
-            if conf < 0.35: continue 
+            if conf < 0.40: continue 
             
-        # Draw Box and Label
         color = (0, 255, 0) if "CNG" in label or "rickshaw" in label else (255, 0, 0)
         cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
         tag = f"{label} {conf:.2f}"
@@ -87,13 +84,15 @@ def run_detection(img_path):
         
     out_name = os.path.basename(img_path)
     cv2.imwrite(os.path.join(OUTPUT_DIR, out_name), annotated)
-    print(f"Saved {out_name}")
 
-# Process a few images from each dir
+# Process all images
+print("Processing all test images...")
+total_saved = 0
 for d in TEST_DIRS:
     if not os.path.exists(d): continue
-    files = [os.path.join(d, f) for f in os.listdir(d) if f.endswith('.jpg')][:15] # Process slightly more
+    files = [os.path.join(d, f) for f in os.listdir(d) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
     for f in files:
         run_detection(f)
+        total_saved += 1
 
-print(f"Finished! Results in {OUTPUT_DIR}")
+print(f"Finished! Processed {total_saved} images. Results in {OUTPUT_DIR}")

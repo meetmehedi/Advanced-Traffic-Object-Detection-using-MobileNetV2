@@ -19,7 +19,7 @@ MODEL_SAVE_PATH = "traffic_classifier_torch.pth"
 CLASS_NAMES_PATH = "class_names.json"
 IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
-EPOCHS = 3 
+EPOCHS = 10 
 
 # 2. Parse XML
 def parse_xml_to_list(xml_dir):
@@ -36,6 +36,7 @@ def parse_xml_to_list(xml_dir):
             
             for obj in root.findall('object'):
                 class_name = obj.find('name').text
+                # Normalization
                 if "CNG" in class_name: class_name = "three wheelers (CNG)"
                 
                 bndbox = obj.find('bndbox')
@@ -102,24 +103,37 @@ class TrafficDataset(Dataset):
             
         return crop, ann['label']
 
-transform = transforms.Compose([
+transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10),
+    transforms.RandomRotation(15),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-dataset = TrafficDataset(annotations, transform=transform)
-train_size = int(0.8 * len(dataset))
-val_size = len(dataset) - train_size
-train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
+transform_val = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+# Split
+dataset_len = len(annotations)
+indices = list(range(dataset_len))
+np.random.seed(42)
+np.random.shuffle(indices)
+train_split = int(0.8 * dataset_len)
+train_indices, val_indices = indices[:train_split], indices[train_split:]
+
+train_dataset = TrafficDataset([annotations[i] for i in train_indices], transform=transform_train)
+val_dataset = TrafficDataset([annotations[i] for i in val_indices], transform=transform_val)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 # 5. Model
-device = torch.device("cpu") # Forced to CPU for stability on Mac
+device = torch.device("cpu") 
 print(f"Using device: {device}")
 
 model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
@@ -134,8 +148,11 @@ model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.classifier.parameters(), lr=1e-3)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=1)
 
 # 6. Training Loop
+best_acc = 0.0
+
 for epoch in range(EPOCHS):
     model.train()
     running_loss = 0.0
@@ -144,7 +161,6 @@ for epoch in range(EPOCHS):
     
     for i, (inputs, labels) in enumerate(train_loader):
         inputs, labels = inputs.to(device), labels.to(device)
-        
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = criterion(outputs, labels)
@@ -172,10 +188,15 @@ for epoch in range(EPOCHS):
             val_total += labels.size(0)
             val_correct += predicted.eq(labels).sum().item()
     
-    print(f"Validation Acc after Epoch {epoch+1}: {100.*val_correct/val_total:.2f}%")
+    val_acc = 100.*val_correct/val_total
+    print(f"Validation Acc after Epoch {epoch+1}: {val_acc:.2f}%")
+    scheduler.step(val_acc)
+    
+    if val_acc > best_acc:
+        best_acc = val_acc
+        torch.save(model.state_dict(), MODEL_SAVE_PATH)
+        print(f"Best model saved (Acc: {best_acc:.2f}%)")
+    
     torch.save(model.state_dict(), f"traffic_classifier_epoch_{epoch+1}.pth")
-    torch.save(model.state_dict(), MODEL_SAVE_PATH)
 
-# 7. Save
-torch.save(model.state_dict(), MODEL_SAVE_PATH)
-print(f"Saved model to {MODEL_SAVE_PATH}")
+print(f"Training Finished. Best Acc: {best_acc:.2f}%")
