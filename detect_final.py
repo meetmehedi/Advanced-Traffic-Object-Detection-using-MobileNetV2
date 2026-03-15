@@ -64,28 +64,35 @@ def run_detection(img_path):
     
     for box in results.boxes:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
-        
-        crop = img[max(0, y1):min(h, y2), max(0, x1):min(w, x2)]
-        if crop.size == 0: continue
-        
-        input_tensor = transform(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)).unsqueeze(0).to(device)
-        with torch.no_grad():
-            outputs = classifier(input_tensor)
-            _, predicted = outputs.max(1)
-            label = class_names[predicted.item()]
-            conf = torch.softmax(outputs, dim=1)[0][predicted].item()
+        yolo_cls = int(box.cls[0].item())
+        yolo_name = detector.names[yolo_cls]
+
+        # If YOLO detects a person, we shouldn't pass it to the vehicle classifier.
+        # It's an expected COCO class according to the research paper.
+        if yolo_name == "person":
+            label = "person"
+            conf = box.conf[0].item()
+        else:
+            crop = img[max(0, y1):min(h, y2), max(0, x1):min(w, x2)]
+            if crop.size == 0: continue
             
-            if conf < 0.40: continue 
+            input_tensor = transform(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)).unsqueeze(0).to(device)
+            with torch.no_grad():
+                outputs = classifier(input_tensor)
+                _, predicted = outputs.max(1)
+                label = class_names[predicted.item()]
+                conf = torch.softmax(outputs, dim=1)[0][predicted].item()
+                
+                if conf < 0.40: continue 
+
+        # Colors: Green for 3-wheelers, Orange for Person, Blue/Cyan for others
+        if "CNG" in label or "rickshaw" in label:
+            color = (0, 255, 0)
+        elif label == "person":
+            color = (0, 165, 255) # BGR representation for Orange
+        else:
+            color = (255, 0, 0)
             
-            # Form-factor heuristic: Rickshaws are wide. If it's a very narrow box, 
-            # it's usually a motorbike rider detected by YOLO as 'person'.
-            ar = (x2 - x1) / float(max(1, y2 - y1))
-            if "rickshaw" in label and ar < 0.45:
-                label = "motorbike"
-                # Optionally retrieve the motorbike confidence from the model outputs
-                # Or just assign the current conf. Using current conf to keep it visible.
-            
-        color = (0, 255, 0) if "CNG" in label or "rickshaw" in label else (255, 0, 0)
         cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
         tag = f"{label} {conf:.2f}"
         cv2.putText(annotated, tag, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
@@ -93,7 +100,6 @@ def run_detection(img_path):
     out_name = os.path.basename(img_path)
     cv2.imwrite(os.path.join(OUTPUT_DIR, out_name), annotated)
 
-# Process all images
 if __name__ == "__main__":
     print("Processing all test images...")
     total_saved = 0
