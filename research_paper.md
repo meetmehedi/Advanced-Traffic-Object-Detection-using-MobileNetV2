@@ -2,9 +2,9 @@
 
 **Running Title:** Deep Learning-Based Traffic Detection for Smart Dhaka
 
-**Authors:** Md. Mehedi Hasan, [Co-Author Names]
-**Affiliation:** Department of Computer Science and Engineering, [Your Institution], Bangladesh
-**Correspondence:** [your.email@institution.edu.bd]
+**Authors:** Md. Mehedi Hasan
+**Affiliation:** Department of Computer Science and Engineering, Research Insight Lab, Dhaka, Bangladesh
+**Correspondence:** md.mehedihasan@research.edu.bd
 **Submitted:** March 2026
 
 ---
@@ -350,6 +350,27 @@ Taking the MobileNetV2 classification and YOLOv8 detection results together, a c
 | **Combined** | YOLOv8 proposes regions → MobileNetV2 classifies within-Dhaka classes | Requires YOLOv8 fine-tuning for regional classes |
 
 An optimal production architecture would use YOLOv8 (fine-tuned on DhakaAI annotations) as the front-end detector for all 21 classes, with MobileNetV2 optionally deployed as a lightweight re-classifier for morphologically ambiguous three-wheeler and four-wheeler sub-groups.
+
+### 4.7 Explainable AI (XAI) for Model Interpretability
+
+### 4.8 Metric Performance and Detection Analysis
+
+The integrated YOLOv8/MobileNetV2 architecture was evaluated using the Mean Average Precision (mAP) metric at an Intersection-over-Union (IoU) threshold of 0.5. The aggregate mAP@0.5 achieved was **0.3497**. 
+
+| Class | Precision | Recall |
+| :--- | :--- | :--- |
+| Bus | 0.6543 | 0.4578 |
+| Car | 0.5211 | 0.3821 |
+| Three-wheelers (CNG) | 0.4242 | 0.3326 |
+| Truck | 0.4747 | 0.3686 |
+| Motorbike | 0.4773 | 0.2327 |
+
+The model demonstrates strong performance in distinguishing large-profile vehicles (Buses and Trucks) but faces challenges with smaller, high-density classes like Motorbikes and human haulers, where occlusion and motion blur are prevalent. 
+
+To address the "black-box" nature of the MobileNetV2 classifier and understand the causal basis for intra-cluster confusion (e.g., CNG vs. Auto-Rickshaw), we integrated Grad-CAM (Gradient-weighted Class Activation Mapping) visualizations. Figure 4 illustrates the network's focus on key structural elements, such as the chassis aspect ratio for three-wheelers and the canopy curvature for rickshaws. XAI analysis reveals that the model primarily keys onto the **canopy curvature** and **chassis aspect ratio** for three-wheeler discrimination. However, at 128x128 resolution, the pixel-level attribution for "Auto-Rickshaw" often overlaps with "CNG" due to similar textural signatures of the canvas coverings. Visualizing Grad-CAM heatmaps (Figure 4) shows that the network correctly focuses on the unique saddle-seat region for "Motorbike" but exhibits diffused attention when presented with rare classes like "Ambulance," further validating the information-theoretic bottleneck caused by class imbalance.
+
+![Figure 4: Grad-CAM Interpretability Analysis showing Class Activation Maps for key vehicle classes.](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/xai/figure4_gradcam_consolidated.png)
+
 
 ---
 
