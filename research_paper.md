@@ -313,7 +313,7 @@ Cross-cluster confusion (e.g., Car labelled as Bicycle, or Bus labelled as Motor
 
 YOLOv8n was evaluated in inference mode on a randomly sampled subset of 12 DhakaAI test images (spanning all four image sub-collections: Asraf, Shykat, Sabiha, and Pias), with annotated detection outputs saved for qualitative analysis.
 
-**Table 3.** YOLOv8n Detection Results on DhakaAI Test Images
+**Table 5.** YOLOv8n Detection Results on DhakaAI Test Images
 
 | # | Source Set | Image ID | Objects | Primary Classes Detected | Peak Conf. |
 |:--|:---|:---|:---:|:---|:---:|
@@ -338,6 +338,16 @@ YOLOv8n was evaluated in inference mode on a randomly sampled subset of 12 Dhaka
 - The 0-detection result for sabiha(174) reflects a genuine sparse-traffic scene, confirming that the model does not over-trigger false positives.
 
 **Figures 3–6** display representative annotated detection outputs sampled across all four DhakaAI image sub-collections.
+
+![Figure 3: Representative YOLOv8n detection output from the Asraf sub-collection (Asraf_85).](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final/Asraf_85_jpg.rf.75015ceafd0b1e56b3e53630afac6558.jpg)
+
+![Figure 4: Representative YOLOv8n detection output from the Shykat sub-collection (Shykat_03_021).](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final/Shykat_03_021_jpg.rf.ea765bce0bb3ae9dc6c298b96c7a2874.jpg)
+
+![Figure 5: Representative YOLOv8n detection output from the Sabiha sub-collection (sabiha(61)).](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final/sabiha(61)_jpg.rf.608ecd71f1dea405f8d9a4f945614da4.jpg)
+
+![Figure 6: Representative YOLOv8n detection output from the Pias sub-collection (Pias(727)).](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final/Pias (727)_jpg.rf.0b73e2a57c081d50a071ff93a2c04c95.jpg)
+
+![Figure 7: High-recall person detection performance in dense urban traffic scenes (Pias(864)).](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final/Pias (864)_jpg.rf.bd9fd8bbeb969e04612d28f7aedc5f40.jpg)
 
 ### 4.6 Synthesis: Combined Pipeline Assessment
 
@@ -367,9 +377,9 @@ The integrated YOLOv8/MobileNetV2 architecture was evaluated using the Mean Aver
 
 The model demonstrates strong performance in distinguishing large-profile vehicles (Buses and Trucks) but faces challenges with smaller, high-density classes like Motorbikes and human haulers, where occlusion and motion blur are prevalent. 
 
-To address the "black-box" nature of the MobileNetV2 classifier and understand the causal basis for intra-cluster confusion (e.g., CNG vs. Auto-Rickshaw), we integrated Grad-CAM (Gradient-weighted Class Activation Mapping) visualizations. Figure 4 illustrates the network's focus on key structural elements, such as the chassis aspect ratio for three-wheelers and the canopy curvature for rickshaws. XAI analysis reveals that the model primarily keys onto the **canopy curvature** and **chassis aspect ratio** for three-wheeler discrimination. However, at 128x128 resolution, the pixel-level attribution for "Auto-Rickshaw" often overlaps with "CNG" due to similar textural signatures of the canvas coverings. Visualizing Grad-CAM heatmaps (Figure 4) shows that the network correctly focuses on the unique saddle-seat region for "Motorbike" but exhibits diffused attention when presented with rare classes like "Ambulance," further validating the information-theoretic bottleneck caused by class imbalance.
+To address the "black-box" nature of the MobileNetV2 classifier and understand the causal basis for intra-cluster confusion (e.g., CNG vs. Auto-Rickshaw), we integrated Grad-CAM (Gradient-weighted Class Activation Mapping) visualizations. Figure 8 illustrates the network's focus on key structural elements, such as the chassis aspect ratio for three-wheelers and the canopy curvature for rickshaws. XAI analysis reveals that the model primarily keys onto the **canopy curvature** and **chassis aspect ratio** for three-wheeler discrimination. However, at 128x128 resolution, the pixel-level attribution for "Auto-Rickshaw" often overlaps with "CNG" due to similar textural signatures of the canvas coverings. Visualizing Grad-CAM heatmaps (Figure 8) shows that the network correctly focuses on the unique saddle-seat region for "Motorbike" but exhibits diffused attention when presented with rare classes like "Ambulance," further validating the information-theoretic bottleneck caused by class imbalance.
 
-![Figure 4: Grad-CAM Interpretability Analysis showing Class Activation Maps for key vehicle classes.](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/xai/figure4_gradcam_consolidated.png)
+![Figure 8: Grad-CAM Interpretability Analysis showing Class Activation Maps for key vehicle classes.](/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/xai/figure4_gradcam_consolidated.png)
 
 
 ---
