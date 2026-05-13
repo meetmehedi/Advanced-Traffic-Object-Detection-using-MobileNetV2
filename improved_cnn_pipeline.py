@@ -18,7 +18,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # 1. Initialize Paths & Hyperparameters
-TRAIN_DIR = r'e:\traffic\train\Final Train Dataset' 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
 IMG_SIZE = (128, 128) # Increased resolution for better feature extraction
 BATCH_SIZE = 32
 EPOCHS = 10 
@@ -169,5 +170,5 @@ plt.ylabel('Actual Label')
 plt.xlabel('Predicted Label')
 plt.tight_layout()
 
-plt.savefig(r'e:\traffic\improved_confusion_matrix.png')
+plt.savefig(os.path.join(BASE_DIR, 'improved_confusion_matrix.png'))
 print("Successfully generated and saved improved unified evaluation plots.")

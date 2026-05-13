@@ -11,10 +11,11 @@ import json
 from tqdm import tqdm
 
 # 1. Config
-TRAIN_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/train/Final Train Dataset"
-YOLO_MODEL_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/yolov8n.pt"
-CLASSIFIER_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/class_names.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
+YOLO_MODEL_PATH = os.path.join(BASE_DIR, "yolov8n.pt")
+CLASSIFIER_PATH = os.path.join(BASE_DIR, "traffic_classifier_torch.pth")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "class_names.json")
 IMG_SIZE = (128, 128)
 IOU_THRESHOLD = 0.5
 CONF_THRESHOLD = 0.30

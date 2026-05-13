@@ -12,9 +12,10 @@ import numpy as np
 import json
 
 # 1. Config
-TRAIN_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/train/Final Train Dataset"
-CLASSIFIER_PATH = "traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "class_names.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
+CLASSIFIER_PATH = os.path.join(BASE_DIR, "traffic_classifier_torch.pth")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "class_names.json")
 IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
 

@@ -14,12 +14,13 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # 1. Config
-TRAIN_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/train/Final Train Dataset"
-MODEL_SAVE_PATH = "traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "class_names.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
+MODEL_SAVE_PATH = os.path.join(BASE_DIR, "traffic_classifier_torch.pth")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "class_names.json")
 IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
-EPOCHS = 10 
+EPOCHS = 10
 
 # 2. Parse XML
 def parse_xml_to_list(xml_dir):
@@ -133,7 +134,7 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 # 5. Model
-device = torch.device("cpu") 
+device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
