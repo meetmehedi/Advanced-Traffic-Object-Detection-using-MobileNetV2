@@ -1,2 +1,39 @@
+# macOS system files
 .DS_Store
-.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Model weights (large binary files – store via Git LFS or external storage)
+*.pth
+*.pt
+*.h5
+*.pkl
+*.joblib
+
+# Generated outputs (re-producible from scripts)
+detection_outputs/
+classification_report.txt
+training_history.png
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp

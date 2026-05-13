@@ -8,14 +8,15 @@ import json
 import numpy as np
 
 # 1. Config
-YOLO_MODEL_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/yolov8n.pt"
-CLASSIFIER_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/class_names.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+YOLO_MODEL_PATH = os.path.join(BASE_DIR, "yolov8n.pt")
+CLASSIFIER_PATH = os.path.join(BASE_DIR, "traffic_classifier_torch.pth")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "class_names.json")
 TEST_DIRS = [
-    "/Users/md.mehedihasan/Downloads/TRaffic/test/test",
-    "/Users/md.mehedihasan/Downloads/TRaffic/test round 2/test round 2"
+    os.path.join(BASE_DIR, "test", "test"),
+    os.path.join(BASE_DIR, "test round 2", "test round 2"),
 ]
-OUTPUT_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/final"
+OUTPUT_DIR = os.path.join(BASE_DIR, "detection_outputs", "final")
 IMG_SIZE = (128, 128)
 CONF_THRESH = 0.45 
 

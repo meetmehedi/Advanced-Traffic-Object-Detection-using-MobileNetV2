@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 
-TRAIN_DIR = '/Users/md.mehedihasan/Downloads/trafic/train/Final Train Dataset'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
 
 IMG_SIZE = (64, 64)
 BATCH_SIZE = 32
@@ -151,7 +152,7 @@ report = classification_report(y_true_classes, y_pred_classes, target_names=labe
 print("\n--- Classification Report ---")
 print(report)
 
-with open('/Users/md.mehedihasan/Downloads/trafic/classification_report.txt', 'w') as f:
+with open(os.path.join(BASE_DIR, 'classification_report.txt'), 'w') as f:
     f.write("Validation Accuracy: {:.2f}%\n\n".format(val_acc*100))
     f.write("--- Classification Report ---\n")
     f.write(report)
@@ -169,7 +170,7 @@ plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
 plt.title('CNN Loss')
 plt.legend()
-plt.savefig('/Users/md.mehedihasan/Downloads/trafic/training_history.png')
+plt.savefig(os.path.join(BASE_DIR, 'training_history.png'))
 print("Saved training_history.png")
 
 cm = confusion_matrix(y_true_classes, y_pred_classes)
@@ -179,6 +180,6 @@ plt.title('Confusion Matrix')
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
 plt.tight_layout()
-plt.savefig('/Users/md.mehedihasan/Downloads/trafic/confusion_matrix.png')
+plt.savefig(os.path.join(BASE_DIR, 'confusion_matrix.png'))
 print("Saved confusion_matrix.png")
 print("Finished!")

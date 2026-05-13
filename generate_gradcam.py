@@ -9,10 +9,11 @@ from PIL import Image
 import json
 
 # 1. Config
-MODEL_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/traffic_classifier_torch.pth"
-CLASS_NAMES_PATH = "/Users/md.mehedihasan/Downloads/TRaffic/class_names.json"
-DATA_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/train/Final Train Dataset"
-OUTPUT_DIR = "/Users/md.mehedihasan/Downloads/TRaffic/detection_outputs/xai"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "traffic_classifier_torch.pth")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "class_names.json")
+DATA_DIR = os.path.join(BASE_DIR, "train", "Final Train Dataset")
+OUTPUT_DIR = os.path.join(BASE_DIR, "detection_outputs", "xai")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # 2. Load Class Names
