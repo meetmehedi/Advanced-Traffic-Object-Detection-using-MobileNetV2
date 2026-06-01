@@ -167,7 +167,7 @@ If you use this work, please cite:
 @inproceedings{biswas2026lightweight,
   title     = {Lightweight Deep Learning for Urban Traffic Intelligence: 
                A MobileNetV2-YOLOv8 Pipeline with Adaptive Resolution Processing},
-  author    = {Biswas, S. and Hasan, M. M. and Mahin, A. A. and Afrose, M. and Based, M. A.},
+  author    = {Biswas, S. and Hasan, M. M., and Rakib, R., and Mahin, A. A. and Afrose, M. and Based, M. A.},
   booktitle = {Proceedings of ECCT 2026},
   publisher = {Atlantis Press, Springer Nature (ACSR)},
   year      = {2026}
