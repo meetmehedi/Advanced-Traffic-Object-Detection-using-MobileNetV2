@@ -192,5 +192,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 <p align="center">
   ⭐ If this work helped you, please consider starring the repository!<br/>
-  <i>Built with ❤️ from Dhaka, Bangladesh</i>
 </p>
