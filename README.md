@@ -11,7 +11,7 @@
 
 <p align="center">
   <b>Accepted at ECCT 2026 (ACSR, Atlantis Press, Springer Nature)</b><br/>
-  Biswas, S., Hasan, M. M., Mahin, A. A., Afrose, M., Based, M. A.
+  Biswas, S., Hasan, M. M.,Rakib, R., Mahin, A. A., Afrose, M., Based, M. A.
 </p>
 
 ---
