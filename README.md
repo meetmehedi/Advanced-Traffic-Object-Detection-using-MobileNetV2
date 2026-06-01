@@ -178,8 +178,8 @@ If you use this work, please cite:
 
 ## 👨‍💻 Authors
 
-**Md. Mehedi Hasan** — Lead Researcher  
-President, DIU Computer Programming Club | IEEE Student Member  
+**Md. Mehedi Hasan**
+Lead Researcher  
 📧 meetmehedi1@gmail.com | 🌐 [mdmehedihasan.us](https://www.mdmehedihasan.us) | [LinkedIn](https://linkedin.com/in/meetmehedi)
 
 ---
